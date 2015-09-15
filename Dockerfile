@@ -14,13 +14,7 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
 
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4
 
-ENV ELASTICSEARCH_VERSION 1.7.0
-
-# RUN echo "deb http://packages.elasticsearch.org/elasticsearch/${ELASTICSEARCH_VERSION%.*}/debian stable main" > /etc/apt/sources.list.d/elasticsearch.list
-#
-# RUN apt-get update \
-#   && apt-get install elasticsearch=$ELASTICSEARCH_VERSION \
-#   && rm -rf /var/lib/apt/lists/*
+ENV ELASTICSEARCH_VERSION 1.7.2
 
 RUN curl -SOL https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.deb \
   && dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}.deb \
@@ -28,13 +22,9 @@ RUN curl -SOL https://download.elastic.co/elasticsearch/elasticsearch/elasticsea
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
 COPY config /usr/share/elasticsearch/config
-
-VOLUME /usr/share/elasticsearch/data
-
 COPY docker-entrypoint.sh /
 
+VOLUME /usr/share/elasticsearch/data
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-EXPOSE 9200 9300
-
 CMD ["elasticsearch"]
+EXPOSE 9200 9300
